@@ -1,6 +1,10 @@
 package controllers
 
 import (
+	"crypto/sha256"
+	"fmt"
+	"strings"
+
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/config"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/initializers"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/models"
@@ -60,7 +64,7 @@ func GetAllLogs(c *fiber.Ctx) error {
 		return &fiber.Error{Code: 500, Message: "Database Error"}
 	}
 
-	config.SetToCache("all_logs_page_"+page, logs)
+	go config.SetToCache("all_logs_page_"+page, logs)
 
 	return c.Status(200).JSON(fiber.Map{
 		"status": "success",
@@ -69,5 +73,46 @@ func GetAllLogs(c *fiber.Ctx) error {
 }
 
 func GetSearchLogs(c *fiber.Ctx) error {
-	return nil
+	searchHash := getHashFromSearches(c)
+
+	logsInCache := config.GetFromCache("search_" + searchHash)
+	if logsInCache != nil {
+		return c.Status(200).JSON(fiber.Map{
+			"status": "success",
+			"logs":   logsInCache,
+		})
+	}
+
+	searchedDB := utils.Search(c)(initializers.DB)
+
+	var logs []models.Log
+	if err := searchedDB.
+		Order("timestamp DESC").
+		Find(&logs).Error; err != nil {
+		return &fiber.Error{Code: 500, Message: "Database Error"}
+	}
+
+	go config.SetToCache("search_"+searchHash, logs)
+
+	return c.Status(200).JSON(fiber.Map{
+		"status": "success",
+		"logs":   logs,
+	})
+}
+
+func getHashFromSearches(c *fiber.Ctx) string {
+	fields := []string{"message", "level", "resource_id", "trace_id", "span_id", "commit", "parent_resource_id", "start", "end"}
+	var values []string
+
+	for _, field := range fields {
+		values = append(values, c.Query(field, ""))
+	}
+
+	combinedString := strings.Join(values, ",")
+
+	hash := sha256.New()
+	hash.Write([]byte(combinedString))
+	hashValue := fmt.Sprintf("%x", hash.Sum(nil))
+
+	return hashValue
 }
