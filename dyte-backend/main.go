@@ -15,7 +15,7 @@ func init() {
 	initializers.ConnectToCache()
 	initializers.AutoMigrate()
 
-	// scripts.PopulateTasks()
+	// scripts.PopulateLogs()
 
 	config.AddLogger()
 }
@@ -24,7 +24,6 @@ func main() {
 	defer config.LoggerCleanUp()
 	app := fiber.New(fiber.Config{
 		ErrorHandler: fiber.DefaultErrorHandler,
-		BodyLimit:    config.BODY_LIMIT,
 	})
 
 	app.Use(helmet.New())

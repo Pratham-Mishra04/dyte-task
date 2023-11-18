@@ -1,13 +1,13 @@
 import { MagnifyingGlass } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 interface Props {
-  initialValue?: string;
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
 }
 
-const SearchBar = ({ initialValue = '' }: Props) => {
-  const [search, setSearch] = useState(initialValue);
+const SearchBar = ({ search, setSearch }: Props) => {
   const router = useRouter();
 
   const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,9 +16,9 @@ const SearchBar = ({ initialValue = '' }: Props) => {
 
   const handleSubmit = (el: React.FormEvent<HTMLFormElement>) => {
     el.preventDefault();
-    if (search === '') router.push('/explore');
+    if (search === '') router.push('/');
     else {
-      router.push(`/explore?search=${search}`);
+      router.push(`/?message=${search}`);
     }
   };
 

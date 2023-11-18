@@ -6,7 +6,7 @@ import (
 )
 
 func LogRouter(app *fiber.App) {
-	logRoutes := app.Group("/logs")
+	logRoutes := app.Group("/")
 
 	logRoutes.Get("/", controllers.GetLogs)
 	logRoutes.Post("/", controllers.AddLog)

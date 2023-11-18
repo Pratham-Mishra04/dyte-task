@@ -10,10 +10,10 @@ import (
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/models"
 )
 
-func PopulateTasks() {
-	log.Println("----------------Populating Tasks----------------")
+func PopulateLogs() {
+	log.Println("----------------Populating Logs----------------")
 
-	jsonFile, err := os.Open("scripts/tasks.json")
+	jsonFile, err := os.Open("scripts/logs.json")
 	if err != nil {
 		log.Fatalf("Failed to open the JSON file: %v", err)
 	}
@@ -42,9 +42,9 @@ func PopulateTasks() {
 		}
 
 		if err := initializers.DB.Create(&newLog).Error; err != nil {
-			log.Printf("%d : Failed to insert task: %v", i, err)
+			log.Printf("%d : Failed to insert log: %v", i, err)
 		} else {
-			log.Printf("%d : Task inserted", i)
+			log.Printf("%d : Log inserted", i)
 		}
 	}
 }
