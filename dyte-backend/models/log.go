@@ -32,3 +32,12 @@ type LogEntrySchema struct {
 	Commit     string   `json:"commit"`
 	MetaData   MetaData `json:"metadata"`
 }
+
+type FilterData struct {
+	Levels            []string `json:"levels"`
+	ResourceIds       []string `json:"resourceIds"`
+	TraceIds          []string `json:"traceIds"`
+	SpanIds           []string `json:"spanIds"`
+	Commits           []string `json:"commits"`
+	ParentResourceIds []string `json:"parentResourceIds"`
+}

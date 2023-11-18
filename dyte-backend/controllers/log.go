@@ -11,6 +11,7 @@ import (
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/models"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/utils"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func AddEntry(body models.LogEntrySchema) {
@@ -79,6 +80,53 @@ func GetLogs(c *fiber.Ctx) error {
 		"status": "success",
 		"logs":   logs,
 	})
+}
+
+func GetFilterData(c *fiber.Ctx) error {
+	filterDataInCache := config.GetFilterDataFromCache("filterData")
+	if filterDataInCache != nil {
+		return c.Status(200).JSON(fiber.Map{
+			"status":     "success",
+			"filterData": filterDataInCache,
+		})
+	}
+
+	filterData := models.FilterData{}
+
+	fields := []string{"level", "resource_id", "trace_id", "span_id", "commit", "parent_resource_id"}
+	for _, field := range fields {
+		if values, err := getAllUniqueValues(initializers.DB, field); err == nil {
+			switch field {
+			case "level":
+				filterData.Levels = values
+			case "resource_id":
+				filterData.ResourceIds = values
+			case "trace_id":
+				filterData.TraceIds = values
+			case "span_id":
+				filterData.SpanIds = values
+			case "commit":
+				filterData.Commits = values
+			case "parent_resource_id":
+				filterData.ParentResourceIds = values
+			}
+		}
+	}
+
+	go config.SetFilterDataToCache("filterData", filterData)
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"filterData": filterData,
+	})
+}
+func getAllUniqueValues(db *gorm.DB, field string) ([]string, error) {
+	var values []string
+	result := db.Model(&models.Log{}).Select(field).Group(field).Find(&values)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return values, nil
 }
 
 func getHashFromSearches(c *fiber.Ctx) string {
