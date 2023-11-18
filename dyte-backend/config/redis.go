@@ -2,43 +2,54 @@ package config
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/initializers"
+	"github.com/Pratham-Mishra04/dyte/dyte-backend/models"
 	"github.com/redis/go-redis/v9"
 )
 
 var ctx = context.TODO()
 
-func GetFromCache(key string) (string, error) {
+func GetFromCache(key string) []models.Log {
 	data, err := initializers.RedisClient.Get(ctx, key).Result()
-	if err != nil {
-		if err == redis.Nil {
-			return "", fmt.Errorf("item not found in cache")
-		}
-		Logger.Warnw("Error Getting from cache", "Error:", err)
-		return "", fmt.Errorf("error getting from cache")
-	}
-	return data, nil
-}
-
-func SetToCache(key string, data []byte) error {
-	if err := initializers.RedisClient.Set(ctx, key, data, initializers.CacheExpirationTime).Err(); err != nil {
-
-		Logger.Warnw("Error Setting to cache", "Error:", err)
-		return fmt.Errorf("error setting to cache")
-	}
-	return nil
-}
-
-func RemoveFromCache(key string) error {
-	err := initializers.RedisClient.Del(ctx, key).Err()
 	if err != nil {
 		if err == redis.Nil {
 			return nil
 		}
-		Logger.Warnw("Error Removing from cache", "Error:", err)
-		return fmt.Errorf("error removing from cache")
+		Logger.Warnw("Error Getting from cache", "Error:", err)
+		return nil
 	}
-	return nil
+
+	logs := []models.Log{}
+	if err = json.Unmarshal([]byte(data), &logs); err != nil {
+		Logger.Warnw("Error while unmarshaling logs", "Error:", err)
+		return nil
+	}
+	return logs
+}
+
+func SetToCache(key string, logs []models.Log) {
+	data, err := json.Marshal(logs)
+	if err != nil {
+		Logger.Warnw("Error while marshaling logs", "Error:", err)
+	}
+
+	if err := initializers.RedisClient.Set(ctx, key, data, initializers.CacheExpirationTime).Err(); err != nil {
+		Logger.Warnw("Error Setting to cache", "Error:", err)
+	}
+}
+
+func RemoveFromCache(key string) {
+	err := initializers.RedisClient.Del(ctx, key).Err()
+	if err != nil && err != redis.Nil {
+		Logger.Warnw("Error Removing from cache", "Error:", err)
+	}
+}
+
+func FlushCache() {
+	err := initializers.RedisClient.FlushAll(ctx).Err()
+	if err != nil {
+		Logger.Warnw("Error flushing cache", "Error", err)
+	}
 }
