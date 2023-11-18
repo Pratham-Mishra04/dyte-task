@@ -15,6 +15,8 @@ func init() {
 	initializers.ConnectToCache()
 	initializers.AutoMigrate()
 
+	// scripts.PopulateTasks()
+
 	config.AddLogger()
 }
 
