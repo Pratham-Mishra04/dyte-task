@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/config"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/initializers"
@@ -18,11 +19,15 @@ func AddEntry(body models.LogEntrySchema) {
 	log.Level = body.Level
 	log.Message = body.Message
 	log.ResourceID = body.ResourceID
-	log.Timestamp = body.Timestamp
 	log.TraceID = body.TraceID
 	log.SpanID = body.SpanID
 	log.Commit = body.Commit
 	log.ParentResourceID = body.MetaData.ParentResourceID
+
+	timestamp, err := time.Parse(time.RFC3339, body.Timestamp)
+	if err == nil {
+		log.Timestamp = timestamp
+	}
 
 	result := initializers.DB.Create(&log)
 	if result.Error != nil {
@@ -45,37 +50,13 @@ func AddLog(c *fiber.Ctx) error {
 	})
 }
 
-func GetAllLogs(c *fiber.Ctx) error {
+func GetLogs(c *fiber.Ctx) error {
 	paginatedDB := utils.Paginator(c)(initializers.DB)
 	page := c.Query("page", "1")
 
-	logsInCache := config.GetFromCache("all_logs_page_" + page)
-	if logsInCache != nil {
-		return c.Status(200).JSON(fiber.Map{
-			"status": "success",
-			"logs":   logsInCache,
-		})
-	}
-
-	var logs []models.Log
-	if err := paginatedDB.
-		Order("timestamp DESC").
-		Find(&logs).Error; err != nil {
-		return &fiber.Error{Code: 500, Message: "Database Error"}
-	}
-
-	go config.SetToCache("all_logs_page_"+page, logs)
-
-	return c.Status(200).JSON(fiber.Map{
-		"status": "success",
-		"logs":   logs,
-	})
-}
-
-func GetSearchLogs(c *fiber.Ctx) error {
 	searchHash := getHashFromSearches(c)
 
-	logsInCache := config.GetFromCache("search_" + searchHash)
+	logsInCache := config.GetFromCache(searchHash + "_page_" + page)
 	if logsInCache != nil {
 		return c.Status(200).JSON(fiber.Map{
 			"status": "success",
@@ -83,7 +64,7 @@ func GetSearchLogs(c *fiber.Ctx) error {
 		})
 	}
 
-	searchedDB := utils.Search(c)(initializers.DB)
+	searchedDB := utils.Search(c)(paginatedDB)
 
 	var logs []models.Log
 	if err := searchedDB.
@@ -92,7 +73,7 @@ func GetSearchLogs(c *fiber.Ctx) error {
 		return &fiber.Error{Code: 500, Message: "Database Error"}
 	}
 
-	go config.SetToCache("search_"+searchHash, logs)
+	go config.SetToCache(searchHash+"_page_"+page, logs)
 
 	return c.Status(200).JSON(fiber.Map{
 		"status": "success",
