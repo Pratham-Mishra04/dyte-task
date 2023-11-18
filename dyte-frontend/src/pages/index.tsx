@@ -11,11 +11,18 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { SlidersHorizontal } from '@phosphor-icons/react';
 import Filters from '@/components/filters';
 import { useRouter } from 'next/router';
+import moment from 'moment';
 
 const buildURL = (baseUrl: string, params: object) => {
   const queryString = Object.entries(params)
     .filter(([_, value]) => value !== null && value !== '')
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => {
+      if (key == 'start' || key == 'end') {
+        const formattedTime = moment(value).format('YYYY-MM-DDTHH:mm:ss[Z]');
+        return `${key}=${formattedTime}`;
+      }
+      return `${key}=${value}`;
+    })
     .join('&');
 
   return queryString ? `${baseUrl}&${queryString}` : baseUrl;
@@ -38,7 +45,9 @@ export default function Home() {
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       if (pageIndex == 1) {
-        setLogs(res.data.logs || []);
+        const logsData: Log[] = res.data.logs || [];
+        setLogs(logsData);
+        if (logsData.length == 0) setHasMore(false);
         setPage(2);
       } else {
         const addedLogs = [...logs, ...(res.data.logs || [])];
