@@ -1,5 +1,6 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import '@/styles/globals.css';
+import '@/styles/extras.tailwind.css';
+import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
 
 const inter = Inter({
@@ -8,7 +9,9 @@ const inter = Inter({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <main className={`${inter.variable}`}>
-  <Component {...pageProps} />
-  </main>
+  return (
+    <main className={`${inter.variable}`}>
+      <Component {...pageProps} />
+    </main>
+  );
 }

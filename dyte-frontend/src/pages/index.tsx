@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Header from '@/components/header';
 import Loader from '@/components/loader';
 import SearchBar from '@/components/searchbar';
@@ -7,12 +8,16 @@ import { Task } from '@/types';
 import Toaster from '@/utils/toaster';
 import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { SlidersHorizontal } from '@phosphor-icons/react';
+import Filters from '@/components/filters';
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  const [clickedOnFilters, setClickedOnFilters] = useState(false);
 
   const fetchTasks = async () => {
     const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}?page=${page}&limit=${10}`;
@@ -30,9 +35,19 @@ export default function Home() {
   };
   return (
     <>
+      {clickedOnFilters ? <Filters setShow={setClickedOnFilters} /> : <></>}
+      <Head>
+        <title>Logs | Dyte</title>
+      </Head>
       <Header />
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center items-center gap-6 py-4">
         <SearchBar />
+        <SlidersHorizontal
+          onClick={() => setClickedOnFilters(true)}
+          className="cursor-pointer"
+          size={32}
+          weight="duotone"
+        />
       </div>
       {loading ? (
         <></>

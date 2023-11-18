@@ -23,10 +23,10 @@ const SearchBar = ({ initialValue = '' }: Props) => {
   };
 
   return (
-    <div className="relative w-1/2 max-md:w-2/3 mx-auto">
+    <div className="relative w-1/2 max-md:w-2/3">
       <form
         onSubmit={handleSubmit}
-        className={`w-full h-12 px-4 text-primary_black bg-gray-100 flex items-center justify-between gap-8 mx-auto rounded-md border-white border-2 dark:border-0 shadow-lg dark:shadow-outer dark:bg-gradient-to-b dark:from-dark_primary_gradient_start dark:to-dark_primary_gradient_end transition-ease-200`}
+        className={`w-full h-12 px-4 text-primary_black bg-gray-100 flex items-center justify-between gap-8 mx-auto rounded-md border-gray-200 border-2 transition-ease-200`}
       >
         <input
           className="h-full grow bg-transparent focus:outline-none font-primary font-medium"
