@@ -11,6 +11,8 @@ RUN go mod download
 
 COPY . .
 
+RUN mkdir /app/logs
+
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /main
 

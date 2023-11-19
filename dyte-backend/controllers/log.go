@@ -47,7 +47,8 @@ func AddLog(c *fiber.Ctx) error {
 	go AddEntry(reqBody)
 
 	return c.Status(200).JSON(fiber.Map{
-		"status": "success",
+		"status":  "success",
+		"message": "Log Added",
 	})
 }
 
@@ -60,8 +61,9 @@ func GetLogs(c *fiber.Ctx) error {
 	logsInCache := config.GetFromCache(searchHash + "_page_" + page)
 	if logsInCache != nil {
 		return c.Status(200).JSON(fiber.Map{
-			"status": "success",
-			"logs":   logsInCache,
+			"status":  "success",
+			"message": "Logs fetched",
+			"logs":    logsInCache,
 		})
 	}
 
@@ -77,8 +79,9 @@ func GetLogs(c *fiber.Ctx) error {
 	go config.SetToCache(searchHash+"_page_"+page, logs)
 
 	return c.Status(200).JSON(fiber.Map{
-		"status": "success",
-		"logs":   logs,
+		"status":  "success",
+		"message": "Logs fetched",
+		"logs":    logs,
 	})
 }
 
@@ -87,6 +90,7 @@ func GetFilterData(c *fiber.Ctx) error {
 	if filterDataInCache != nil {
 		return c.Status(200).JSON(fiber.Map{
 			"status":     "success",
+			"message":    "Filter Data fetched",
 			"filterData": filterDataInCache,
 		})
 	}
@@ -117,6 +121,7 @@ func GetFilterData(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"status":     "success",
+		"message":    "Filter Data fetched",
 		"filterData": filterData,
 	})
 }
