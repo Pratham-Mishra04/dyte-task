@@ -73,7 +73,7 @@ func GetLogs(c *fiber.Ctx) error {
 	if err := searchedDB.
 		Order("timestamp DESC").
 		Find(&logs).Error; err != nil {
-		return &fiber.Error{Code: 500, Message: "Database Error"}
+		return &fiber.Error{Code: 500, Message: config.DATABASE_ERROR}
 	}
 
 	go config.SetToCache(searchHash+"_page_"+page, logs)
@@ -125,6 +125,30 @@ func GetFilterData(c *fiber.Ctx) error {
 		"filterData": filterData,
 	})
 }
+
+func DeleteLog(c *fiber.Ctx) error {
+	logID := c.Params("logID")
+
+	var log models.Log
+	if err := initializers.DB.First(&log, "id = ?", logID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return &fiber.Error{Code: 400, Message: "No Log of this ID found."}
+		}
+		go config.Logger.Warn("Error while fetching log: ", "Error", err)
+		return &fiber.Error{Code: 500, Message: config.DATABASE_ERROR}
+	}
+
+	if err := initializers.DB.Delete(&log).Error; err != nil {
+		go config.Logger.Warn("Error while deleting log: ", "Error", err)
+		return &fiber.Error{Code: 500, Message: config.DATABASE_ERROR}
+	}
+
+	return c.Status(204).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Log deleted successfully",
+	})
+}
+
 func getAllUniqueValues(db *gorm.DB, field string) ([]string, error) {
 	var values []string
 	result := db.Model(&models.Log{}).Select(field).Group(field).Find(&values)
