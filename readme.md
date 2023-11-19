@@ -29,18 +29,56 @@ The task assigned for the SDE internship process at Dyte involves the creation o
 - **ORM:** GORM
 - **Databases:** PostgreSQL (main database), Redis (caching)
 
+## Role-Based Model
+
+The Dyte Log Ingestor implements a role-based model with two user roles: **Member** and **Manager**.
+
+- **Members:** Members have the privilege to view logs.
+- **Managers:** Managers have additional permissions and can delete logs.
+
+#### Getting Started with Roles
+
+1. After running both Docker containers, you need to sign in.
+
+2. To create dummy users with their respective roles:
+   - Set the backend `POPULATE_USERS` environment variable to `true`.
+   - Dummy users with names "member" and "manager" will be created.
+
+3. Alternatively, you can create a new user:
+   - Visit the `/signup` route.
+   - Provide the necessary details to create a new user.
+
+#### Populating Logs (Optional)
+
+- You can set the backend `POPULATE_LOGS` environment variable to `true` to fill the database with dummy logs.
+
+This role-based model ensures a secure and controlled access environment, allowing Members to view logs and Managers to perform additional actions.
+
+
+
 ## Usage
 
 To utilize the Dyte Log Ingestor and Query Interface, follow these steps:
 
-#### Clone the Repository
+#### - Clone the Repository
 
 ```bash
 git clone https://github.com/Pratham-Mishra04/dyte-task
 cd dyte-task
 ```
 
-- Then follow the commands mentioned in the this document later
+#### - Run the docker commands in both the folders
+Navigate to the respective directories and execute the following Docker commands: 
+
+```bash
+sudo docker compose build
+sudo docker compose up -d
+```
+
+**( refer the respective running frontend and backend sections )**
+
+
+#### - Refer the *Getting Started with Roles*
 
 # Web Interface (Frontend)
 
@@ -109,6 +147,14 @@ The `Log` model is structured as follows:
 - **SpanID:** Unique identifier for the span of the log.
 - **Commit:** Commit identifier.
 - **ParentResourceID:** Unique identifier for the parent resource.
+
+## User Model
+
+The `User` model is structured as follows:
+
+- **Username:** Unique username.
+- **Password:** Hashed Password.
+- **Role:** Can be either `Member` or `Manager`
 
 ## Endpoints
 
@@ -179,9 +225,22 @@ The `Log` model is structured as follows:
     "status": "success" | "failed",
     "message": "Message from the API"
     }
+
+### 3. Delete a Log
+
+- **Endpoint:** `DELETE /:logID`
+- **Description:** Delete a log the database.
+
+- **Response Format:** The response from the `DELETE /:logID` endpoint is in JSON format and follows the structure below:
+
+    ```json
+    {
+    "status": "success" | "failed",
+    "message": "Message from the API"
+    }
     ```
 
-#### 3. Get Filter Metadata
+### 4. Get Filter Metadata
 
 - **Endpoint:** `GET /filter_data`
 - **Description:** Used by the frontend to retrieve unique levels, resource IDs, trace IDs, span IDs, commits, and parent resource IDs.
@@ -199,8 +258,82 @@ The `Log` model is structured as follows:
       "parentResourceIds": ["server-0987", "server-6543", ...]
     }
   }
+### 5. Sign Up
+
+- **Endpoint:** `POST /signup`
+- **Description:** Create a new user.
+- **Request Format:**
+  ```json
+  {
+    "username": "user",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "role": "Member"
+  }
+
+- **Response Format:** The response from the `POST /signup` endpoint is in JSON format and follows the structure below:
+
+    ```json
+    {
+    "status": "success" | "failed",
+    "message": "Message from the API",
+    "user":{
+        "username": "user",
+        "password": "12345678",
+        "confirmPassword": "12345678",
+        "role": "Member"
+        },
+    "access_token":"access_token"
+    }
     ```
+
+    `refresh_token` is set to the http cookie.
     
+### 6. Login
+
+- **Endpoint:** `POST /login`
+- **Description:** Login route.
+- **Request Format:**
+  ```json
+  {
+    "username": "user",
+    "password": "12345678",
+  }
+
+- **Response Format:** The response from the `POST /login` endpoint is in JSON format and follows the structure below:
+
+    ```json
+    {
+    "status": "success" | "failed",
+    "message": "Message from the API",
+    "user":{
+        "username": "user",
+        "password": "12345678",
+        "confirmPassword": "12345678",
+        "role": "Member"
+        },
+    "access_token":"access_token"
+    } 
+
+    `refresh_token` is set to the http cookie.
+
+### 7. Refresh
+
+- **Endpoint:** `POST /refresh`
+- **Description:** Get a new access token, using the refresh token in the cookie.
+- **Request Format:**
+  ```json
+  {
+    "token":"access_token"
+  }
+
+- **Response Format:** The response from the `POST /signup` endpoint is in JSON format and follows the structure below:
+
+    ```json
+    {
+    "token":"access_token"
+    }
+
 ## Caching
 
 Redis is utilized for caching in this system. The filters used in queries are converted into a hash, serving as the key for the Redis storage. This approach ensures that redundant queries for the same filter do not incur additional processing time. The Redis storage also considers pagination, using the default limit of 10.
@@ -225,6 +358,17 @@ To run the Dyte Log Ingestor Backend, follow these steps:
     ```
 
 4. The application will be accessible at `http://localhost:3000` by default.
+
+5. You can set the envs `POPULATE_USERS` and `POPULATE_LOGS` to true to fill dummy users and logs.
+6. If there is any issue with the postgres database on the docker container **concerning UUID**, please run this code
+  ```bash
+    sudo docker exec -it dyte-postgres-db bash
+    psql ${POSTGRES_DB} -U ${POSTGRES_USER}
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    exit;
+    exit;
+  ```
+
 
 ## Efficiency
 
