@@ -110,14 +110,19 @@ To run the Dyte Log Ingestor Frontend, follow these steps:
 
 2. Open a terminal and navigate to the root directory of the frontend.
 
-3. Run the following commands:
+3. Build your env file *(refer env.sample)*
+    ```bash
+    sudo nano .env
+   ```
+
+4. Run the following commands:
 
     ```bash
     sudo docker compose build
     sudo docker compose up
     ```
 
-4. The application will be accessible at `http://localhost:8000` by default.
+5. The application will be accessible at `http://localhost:8000` by default.
 
 ## Screenshots
 
@@ -350,23 +355,28 @@ To run the Dyte Log Ingestor Backend, follow these steps:
 
 2. Open a terminal and navigate to the root directory of the backend.
 
-3. Run the following commands:
+3. Build your env file *(refer env.sample)*
+    ```bash
+    sudo nano .env
+   ```
+
+4. Run the following commands:
 
     ```bash
     sudo docker compose build
     sudo docker compose up
     ```
 
-4. The application will be accessible at `http://localhost:3000` by default.
+5. The application will be accessible at `http://localhost:3000` by default.
 
-5. You can set the envs `POPULATE_USERS` and `POPULATE_LOGS` to true to fill dummy users and logs.
-6. If there is any issue with the postgres database on the docker container **concerning UUID**, please run this code
+6. You can set the envs `POPULATE_USERS` and `POPULATE_LOGS` to true to fill dummy users and logs.
+7. If there is any issue with the postgres database on the docker container **concerning UUID**, please run this code
   ```bash
     sudo docker exec -it dyte-postgres-db bash
     psql ${POSTGRES_DB} -U ${POSTGRES_USER}
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-    exit;
-    exit;
+    exit
+    exit
   ```
 
 
@@ -377,6 +387,18 @@ The architecture prioritizes speed and efficiency. Golang is chosen for its exce
 PostgreSQL is chosen due to its ACID compliance, ensuring efficient and secure handling of multiple connections without concerns about transaction overhead or data integrity.
 
 Redis is utilized for caching in this system. The filters used in queries are converted into a hash, serving as the key for the Redis storage. This approach ensures that redundant queries for the same filter do not incur additional processing time.
+
+## Database Sharding (Exploration)
+
+While developing the Dyte Log Ingestor, I considered the option of implementing database sharding to enhance scalability. Although familiar with the concept, I hadn't previously implemented it in PostgreSQL.
+
+In my exploration, I came across a PostgreSQL extension called **Citus**, specifically designed for enabling distributed database architectures through sharding. I delved into the documentation and began the integration process.
+
+However, considering the limited time available and the diverse set of features to implement, I made the decision not to include Citus in the final model for this project. My primary concern was the potential introduction of unforeseen errors that might require extensive debugging.
+
+Now equipped with the knowledge of Citus, I plan to further explore and experiment with it in future projects. The scalability benefits offered by database sharding are intriguing, and I look forward to incorporating such advanced techniques into upcoming endeavors.
+
+This decision allowed me to prioritize completing the core functionality within the given timeframe while acknowledging the potential for future enhancements through advanced database sharding techniques.
 
 # Conclusion
 
