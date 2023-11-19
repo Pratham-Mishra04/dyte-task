@@ -31,7 +31,7 @@ func main() {
 	app.Use(config.CORS())
 	// app.Use(config.RATE_LIMITER())
 
-	routers.LogRouter(app)
+	routers.Config(app)
 
 	app.Listen(":" + initializers.CONFIG.PORT)
 }

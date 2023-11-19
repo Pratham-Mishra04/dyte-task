@@ -9,3 +9,8 @@ export interface Log {
   commit: string;
   parentResourceId: string;
 }
+
+export interface User {
+  id: string;
+  username: string;
+}

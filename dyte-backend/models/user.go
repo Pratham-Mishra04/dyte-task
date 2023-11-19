@@ -13,7 +13,7 @@ const (
 	Manager UserRole = "Manager"
 )
 
-type User struct {
+type LogUser struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key" json:"id"`
 	Username  string    `gorm:"type:text;unique;not null" json:"username"`
 	Role      UserRole  `gorm:"type:text" json:"role"`

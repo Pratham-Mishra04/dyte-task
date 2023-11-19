@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.0.14",
+    "@types/js-cookie": "^3.0.6",
     "axios": "^1.6.2",
+    "js-cookie": "^3.0.5",
     "moment": "^2.29.4",
     "next": "14.0.3",
     "react": "^18",

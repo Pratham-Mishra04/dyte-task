@@ -1,30 +1,30 @@
 import configuredAxios from '@/config/axios';
-import { GenericAbortSignal } from 'axios';
 
-const getHandler = async (URL: string, signal?: GenericAbortSignal) => {
+const postHandler = async (URL: string, formData: object, type: string = 'application/json') => {
   const headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': type,
+    Authorization: '',
   };
 
   const response: any = {
     status: 0,
-    data: '',
+    data: {},
     statusCode: 500,
   };
+
   await configuredAxios
-    .get(URL, { headers, signal })
+    .post(URL, formData, { headers })
     .then(res => {
       response.status = 1;
       response.data = res.data;
       response.statusCode = res.status;
     })
     .catch(err => {
-      if (err.name == 'CanceledError') response.status = -1;
-      else response.status = 0;
+      response.status = 0;
       response.data = err.response?.data || '';
       response.statusCode = 500;
     });
   return response;
 };
 
-export default getHandler;
+export default postHandler;

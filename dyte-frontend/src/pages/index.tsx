@@ -12,6 +12,7 @@ import { SlidersHorizontal } from '@phosphor-icons/react';
 import Filters from '@/components/filters';
 import { useRouter } from 'next/router';
 import moment from 'moment';
+import Protect from '@/utils/protect';
 
 const buildURL = (baseUrl: string, params: object) => {
   const queryString = Object.entries(params)
@@ -28,7 +29,7 @@ const buildURL = (baseUrl: string, params: object) => {
   return queryString ? `${baseUrl}&${queryString}` : baseUrl;
 };
 
-export default function Home() {
+const Home = () => {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -114,4 +115,6 @@ export default function Home() {
       )}
     </>
   );
-}
+};
+
+export default Protect(Home);

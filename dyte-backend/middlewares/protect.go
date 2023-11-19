@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func verifyToken(tokenString string, user *models.User) error {
+func verifyToken(tokenString string, user *models.LogUser) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -58,7 +58,7 @@ func Protect(c *fiber.Ctx) error {
 
 	tokenString := tokenArr[1]
 
-	var user models.User
+	var user models.LogUser
 	err := verifyToken(tokenString, &user)
 	if err != nil {
 		return err

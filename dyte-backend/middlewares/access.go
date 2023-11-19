@@ -20,7 +20,7 @@ func UserAuthorization(Role models.UserRole) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		loggedInUserID := c.GetRespHeader("loggedInUserID")
 
-		var user models.User
+		var user models.LogUser
 		err := initializers.DB.First(&user, "id = ?", loggedInUserID).Error
 		if err != nil {
 			return &fiber.Error{Code: 400, Message: "No user of this id found."}
