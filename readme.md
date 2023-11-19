@@ -110,7 +110,7 @@ To run the Dyte Log Ingestor Frontend, follow these steps:
 
 2. Open a terminal and navigate to the root directory of the frontend.
 
-3. Build your env file *(refer env.sample)*
+3. Copy env from  *env.sample* and make changes only if necessary.
     ```bash
     sudo nano .env
    ```
@@ -380,7 +380,7 @@ To run the Dyte Log Ingestor Backend, follow these steps:
 
 2. Open a terminal and navigate to the root directory of the backend.
 
-3. Build your env file *(refer env.sample)*
+3. Copy env from  *env.sample* and make changes only if necessary.
     ```bash
     sudo nano .env
    ```
