@@ -2,12 +2,15 @@ package scripts
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"time"
 
+	"github.com/Pratham-Mishra04/dyte/dyte-backend/config"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/initializers"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func PopulateUsers() {
@@ -19,13 +22,25 @@ func PopulateUsers() {
 	}
 	defer jsonFile.Close()
 
-	var entries []models.LogUser
+	var entries []models.UserCreateSchema
 	jsonDecoder := json.NewDecoder(jsonFile)
 	if err := jsonDecoder.Decode(&entries); err != nil {
 		log.Fatalf("Failed to decode JSON: %v", err)
 	}
 
-	for i, user := range entries {
+	for i, entry := range entries {
+		hash, err := bcrypt.GenerateFromPassword([]byte(entry.Password), 12)
+		if err != nil {
+			fmt.Println("Error while hashing Password.")
+			go config.Logger.Errorw("Error while hashing Password.", "Error:", err)
+		}
+
+		user := models.LogUser{
+			Username: entry.Username,
+			Password: string(hash),
+			Role:     entry.Role,
+		}
+
 		if err := initializers.DB.Create(&user).Error; err != nil {
 			log.Printf("%d : Failed to insert user: %v", i, err)
 		} else {

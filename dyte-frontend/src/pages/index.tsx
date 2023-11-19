@@ -91,15 +91,15 @@ const Home = () => {
         />
       </div>
       <div className="w-[95%] h-16 mx-auto border-b-[1px] border-gray-400 flex text-base font-semibold text-gray-500">
-        <div className="w-1/12 flex-center">Time</div>
-        <div className="w-1/12 flex-center">Date</div>
-        <div className={`${userRole == 'Manager' ? 'w-3/12' : 'w-4/12'} flex-center`}>Message</div>
-        <div className="w-1/12 flex-center">Level</div>
-        <div className="w-1/12 flex-center">Resource ID</div>
-        <div className="w-1/12 flex-center">Trace ID</div>
-        <div className="w-1/12 flex-center">Span ID</div>
-        <div className="w-1/12 flex-center">Commit</div>
-        <div className="w-1/12 flex-center">Parent Res. ID</div>
+        <div className="w-1/12 flex-center max-md:hidden">Time</div>
+        <div className="w-1/12 flex-center max-md:w-2/6">Date</div>
+        <div className={`${userRole == 'Manager' ? 'w-3/12' : 'w-4/12'} flex-center max-md:w-3/6`}>Message</div>
+        <div className="w-1/12 flex-center max-md:w-1/6">Level</div>
+        <div className="w-1/12 flex-center max-md:hidden">Resource ID</div>
+        <div className="w-1/12 flex-center max-md:hidden">Trace ID</div>
+        <div className="w-1/12 flex-center max-md:hidden">Span ID</div>
+        <div className="w-1/12 flex-center max-md:hidden">Commit</div>
+        <div className="w-1/12 flex-center max-md:hidden">Parent Res. ID</div>
         {userRole == 'Manager' ? (
           <div className="w-1/12 flex-center">
             <Trash size={24} weight="bold" />

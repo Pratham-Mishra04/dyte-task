@@ -126,17 +126,42 @@ To run the Dyte Log Ingestor Frontend, follow these steps:
 
 ## Screenshots
 
-#### Dashboard
+*Sign Up*
 
-![Dashboard](path/to/dashboard-screenshot.png)
+![Sign Up](screenshots/signup.png)
 
-*Caption: Screenshot of the Dashboard page.*
+*Login*
 
-#### Log Viewer
+![Sign Up](screenshots/login.png)
 
-![Log Viewer](path/to/log-viewer-screenshot.png)
+*Member View*
 
-*Caption: Screenshot of the Log Viewer page.*
+![Sign Up](screenshots/member_view.png)
+
+*Manager View*
+
+![Sign Up](screenshots/manager_view.png)
+
+*Delete Log*
+
+![Sign Up](screenshots/delete_log.png)
+
+*Search*
+
+![Sign Up](screenshots/message_search.png)
+
+*Filter Box*
+
+![Sign Up](screenshots/filters_box.png)
+
+*Filter Example*
+
+![Sign Up](screenshots/filters_example.png)
+
+*Filter Based on Time*
+
+![Sign Up](screenshots/time_filter.png)
+
 
 # API (Backend)
 

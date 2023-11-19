@@ -52,10 +52,14 @@ const LogCard = ({ log, setLogs }: Props) => {
     <>
       {clickedOnDelete ? <ConfirmDelete handleDelete={handleDelete} setShow={setClickedOnDelete} /> : <></>}
       <div className="w-[95%] h-16 mx-auto border-b-[1px] border-gray-200 flex text-base text-gray-600">
-        <div className="w-1/12 flex-center">{moment(log.timestamp).format('HH:MM:SS')}</div>
-        <div className="w-1/12 flex-center">{moment(log.timestamp).format('DD MMM YY')}</div>
-        <div className={`${userRole == 'Manager' ? 'w-3/12' : 'w-4/12'} flex-center`}>{log.message}</div>
-        <div className="w-1/12 flex-center">
+        <div className="w-1/12 flex-center max-md:hidden">{moment(log.timestamp).format('HH:MM:SS')}</div>
+        <div className="w-1/12 flex-center max-md:w-2/6 max-md:text-xs">
+          {moment(log.timestamp).format('DD MMM YY')}
+        </div>
+        <div className={`${userRole == 'Manager' ? 'w-3/12' : 'w-4/12'} flex-center max-md:w-3/6 max-md:text-xs`}>
+          {log.message}
+        </div>
+        <div className="w-1/12 flex-center max-md:w-1/6 max-md:text-xs">
           <div
             style={{ backgroundColor: getLogColor() }}
             className="w-20 rounded-lg p-1 flex-center text-sm font-medium"
@@ -63,11 +67,11 @@ const LogCard = ({ log, setLogs }: Props) => {
             {log.level}
           </div>
         </div>
-        <div className="w-1/12 flex-center">{log.resourceId}</div>
-        <div className="w-1/12 flex-center">{log.traceId}</div>
-        <div className="w-1/12 flex-center">{log.spanId}</div>
-        <div className="w-1/12 flex-center">{log.commit}</div>
-        <div className="w-1/12 flex-center">{log.parentResourceId}</div>
+        <div className="w-1/12 flex-center max-md:hidden">{log.resourceId}</div>
+        <div className="w-1/12 flex-center max-md:hidden">{log.traceId}</div>
+        <div className="w-1/12 flex-center max-md:hidden">{log.spanId}</div>
+        <div className="w-1/12 flex-center max-md:hidden">{log.commit}</div>
+        <div className="w-1/12 flex-center max-md:hidden">{log.parentResourceId}</div>
         {userRole == 'Manager' ? (
           <div className="w-1/12 flex-center">
             <X onClick={() => setClickedOnDelete(true)} className="cursor-pointer" size={20} />

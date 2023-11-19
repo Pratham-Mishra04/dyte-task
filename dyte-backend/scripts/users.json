@@ -2,11 +2,13 @@
   {
     "username": "member",
     "password": "12345678",
+    "confirmPassword": "12345678",
     "role": "Member"
   },
   {
     "username": "manager",
     "password": "12345678",
+    "confirmPassword": "12345678",
     "role": "Manager"
   }
 ]
