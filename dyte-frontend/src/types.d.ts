@@ -13,4 +13,5 @@ export interface Log {
 export interface User {
   id: string;
   username: string;
+  role: string;
 }

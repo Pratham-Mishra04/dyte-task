@@ -8,11 +8,12 @@ import { Log } from '@/types';
 import Toaster from '@/utils/toaster';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { SlidersHorizontal } from '@phosphor-icons/react';
+import { SlidersHorizontal, Trash } from '@phosphor-icons/react';
 import Filters from '@/components/filters';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import Protect from '@/utils/protect';
+import Cookies from 'js-cookie';
 
 const buildURL = (baseUrl: string, params: object) => {
   const queryString = Object.entries(params)
@@ -71,6 +72,8 @@ const Home = () => {
     fetchLogs(1);
   }, [router.query]);
 
+  const userRole = Cookies.get('role');
+
   return (
     <>
       {clickedOnFilters ? <Filters setShow={setClickedOnFilters} /> : <></>}
@@ -90,13 +93,20 @@ const Home = () => {
       <div className="w-[95%] h-16 mx-auto border-b-[1px] border-gray-400 flex text-base font-semibold text-gray-500">
         <div className="w-1/12 flex-center">Time</div>
         <div className="w-1/12 flex-center">Date</div>
-        <div className="w-4/12 flex-center">Message</div>
+        <div className={`${userRole == 'Manager' ? 'w-3/12' : 'w-4/12'} flex-center`}>Message</div>
         <div className="w-1/12 flex-center">Level</div>
         <div className="w-1/12 flex-center">Resource ID</div>
         <div className="w-1/12 flex-center">Trace ID</div>
         <div className="w-1/12 flex-center">Span ID</div>
         <div className="w-1/12 flex-center">Commit</div>
         <div className="w-1/12 flex-center">Parent Res. ID</div>
+        {userRole == 'Manager' ? (
+          <div className="w-1/12 flex-center">
+            <Trash size={24} weight="bold" />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       {loading ? (
         <Loader />
@@ -109,7 +119,7 @@ const Home = () => {
           loader={<Loader />}
         >
           {logs.map(log => {
-            return <LogCard key={log.id} log={log} />;
+            return <LogCard key={log.id} log={log} setLogs={setLogs} />;
           })}
         </InfiniteScroll>
       )}

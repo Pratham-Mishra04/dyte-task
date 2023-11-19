@@ -3,11 +3,11 @@ package models
 import (
 	"time"
 
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 type Log struct {
-	gorm.Model
+	ID               uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key" json:"id"`
 	Level            string    `json:"level" gorm:"index:idx_level"`
 	Message          string    `json:"message"`
 	ResourceID       string    `json:"resourceId" gorm:"index:idx_resource_id"`

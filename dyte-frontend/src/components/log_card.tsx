@@ -1,12 +1,33 @@
 import { Log } from '@/types';
-import React from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import moment from 'moment';
+import { X } from '@phosphor-icons/react';
+import Toaster from '@/utils/toaster';
+import deleteHandler from '@/handlers/delete_handler';
+import ConfirmDelete from './confirm_delete';
+import Cookies from 'js-cookie';
 
 interface Props {
   log: Log;
+  setLogs: Dispatch<SetStateAction<Log[]>>;
 }
 
-const LogCard = ({ log }: Props) => {
+const LogCard = ({ log, setLogs }: Props) => {
+  const [clickedOnDelete, setClickedOnDelete] = useState(false);
+
+  const handleDelete = async () => {
+    const toaster = Toaster.startLoad('Deleting this log...');
+    const URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/logs/${log.id}`;
+    const res = await deleteHandler(URL);
+    if (res.statusCode === 204) {
+      setLogs(prev => prev.filter(l => l.id != l.id));
+      setClickedOnDelete(false);
+      Toaster.stopLoad(toaster, 'Log Deleted', 1);
+    } else {
+      Toaster.stopLoad(toaster, 'Internal Server Error', 0);
+    }
+  };
+
   const getLogColor = () => {
     switch (log.level) {
       case 'info':
@@ -24,35 +45,38 @@ const LogCard = ({ log }: Props) => {
         return '#fff';
     }
   };
-  return (
-    // <div className="w-3/5 bg-gray-50 flex flex-col gap-1 font-primary border-[1px] border-primary_black text-primary_black p-2 rounded-xl transition-ease-300">
-    //   <div className="w-full font-medium text-xl">{log.message}</div>
-    //   <div className="w-full flex justify-between">
-    //     <div>Level: {log.level}</div>
-    //     <div className="text-gray-600 text-xs">{moment(log.timestamp).format('HH:MM:SS DD-MM-YY')}</div>
-    //   </div>
-    //   <div>resourceId:{log.resourceId}</div>
-    //   <div>traceId:{log.traceId}</div>
-    //   <div>spanId:{log.spanId}</div>
-    //   <div>parentResourceId:{log.parentResourceId}</div>
-    //   <div>commit:{log.commit}</div>
-    // </div>
 
-    <div className="w-[95%] h-16 mx-auto border-b-[1px] border-gray-200 flex text-base text-gray-600">
-      <div className="w-1/12 flex-center">{moment(log.timestamp).format('HH:MM:SS')}</div>
-      <div className="w-1/12 flex-center">{moment(log.timestamp).format('DD MMM YY')}</div>
-      <div className="w-4/12 flex-center">{log.message}</div>
-      <div className="w-1/12 flex-center">
-        <div style={{ backgroundColor: getLogColor() }} className="w-20 rounded-lg p-1 flex-center text-sm font-medium">
-          {log.level}
+  const userRole = Cookies.get('role');
+
+  return (
+    <>
+      {clickedOnDelete ? <ConfirmDelete handleDelete={handleDelete} setShow={setClickedOnDelete} /> : <></>}
+      <div className="w-[95%] h-16 mx-auto border-b-[1px] border-gray-200 flex text-base text-gray-600">
+        <div className="w-1/12 flex-center">{moment(log.timestamp).format('HH:MM:SS')}</div>
+        <div className="w-1/12 flex-center">{moment(log.timestamp).format('DD MMM YY')}</div>
+        <div className={`${userRole == 'Manager' ? 'w-3/12' : 'w-4/12'} flex-center`}>{log.message}</div>
+        <div className="w-1/12 flex-center">
+          <div
+            style={{ backgroundColor: getLogColor() }}
+            className="w-20 rounded-lg p-1 flex-center text-sm font-medium"
+          >
+            {log.level}
+          </div>
         </div>
+        <div className="w-1/12 flex-center">{log.resourceId}</div>
+        <div className="w-1/12 flex-center">{log.traceId}</div>
+        <div className="w-1/12 flex-center">{log.spanId}</div>
+        <div className="w-1/12 flex-center">{log.commit}</div>
+        <div className="w-1/12 flex-center">{log.parentResourceId}</div>
+        {userRole == 'Manager' ? (
+          <div className="w-1/12 flex-center">
+            <X onClick={() => setClickedOnDelete(true)} className="cursor-pointer" size={20} />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
-      <div className="w-1/12 flex-center">{log.resourceId}</div>
-      <div className="w-1/12 flex-center">{log.traceId}</div>
-      <div className="w-1/12 flex-center">{log.spanId}</div>
-      <div className="w-1/12 flex-center">{log.commit}</div>
-      <div className="w-1/12 flex-center">{log.parentResourceId}</div>
-    </div>
+    </>
   );
 };
 
