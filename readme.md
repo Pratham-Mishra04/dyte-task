@@ -1,4 +1,4 @@
-# Dyte SDE Inter Task
+# Dyte SDE Internship Task
 
 ## Overview
 
@@ -37,7 +37,7 @@ To utilize the Dyte Log Ingestor and Query Interface, follow these steps:
 
 ```bash
 git clone https://github.com/Pratham-Mishra04/dyte-task
-cd your-repo
+cd dyte-task
 ```
 
 - Then follow the commands mentioned in the this document later

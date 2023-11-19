@@ -86,6 +86,17 @@ export default function Home() {
           weight="duotone"
         />
       </div>
+      <div className="w-[95%] h-16 mx-auto border-b-[1px] border-gray-400 flex text-base font-semibold text-gray-500">
+        <div className="w-1/12 flex-center">Time</div>
+        <div className="w-1/12 flex-center">Date</div>
+        <div className="w-4/12 flex-center">Message</div>
+        <div className="w-1/12 flex-center">Level</div>
+        <div className="w-1/12 flex-center">Resource ID</div>
+        <div className="w-1/12 flex-center">Trace ID</div>
+        <div className="w-1/12 flex-center">Span ID</div>
+        <div className="w-1/12 flex-center">Commit</div>
+        <div className="w-1/12 flex-center">Parent Res. ID</div>
+      </div>
       {loading ? (
         <Loader />
       ) : (
