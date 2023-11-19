@@ -1,6 +1,6 @@
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
-import { X } from '@phosphor-icons/react';
+import { Backspace, X } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
@@ -135,8 +135,17 @@ const Filters = ({ setShow }: Props) => {
       <div className="fixed top-48 max-md:top-20 w-2/5 max-lg:w-5/6 h-fit backdrop-blur-2xl bg-white flex flex-col gap-4 max-lg:gap-2 rounded-lg p-8 font-primary overflow-y-auto border-[1px] border-primary_black right-1/2 shadow-lg translate-x-1/2 animate-fade_third z-50 max-lg:z-[60]">
         <div className="w-full flex justify-between">
           <div className="font-semibold text-6xl text-gray-800">Filters</div>
-
-          <X className="cursor-pointer" onClick={() => setShow(false)} size={32} />
+          <div className="w-fit flex gap-2">
+            <Backspace
+              className="cursor-pointer"
+              onClick={() => {
+                router.push('/');
+                setShow(false);
+              }}
+              size={32}
+            />
+            <X className="cursor-pointer" onClick={() => setShow(false)} size={32} />
+          </div>
         </div>
 
         <div className="w-full flex flex-col gap-4">

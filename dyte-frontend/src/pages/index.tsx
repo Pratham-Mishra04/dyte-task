@@ -81,8 +81,8 @@ export default function Home() {
         <SearchBar search={search} setSearch={setSearch} />
         <SlidersHorizontal
           onClick={() => setClickedOnFilters(true)}
-          className="cursor-pointer"
-          size={32}
+          className="cursor-pointer hover:bg-gray-100 rounded-full p-2 flex-center transition-ease-300"
+          size={42}
           weight="duotone"
         />
       </div>

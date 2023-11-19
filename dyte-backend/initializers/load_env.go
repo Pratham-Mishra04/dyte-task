@@ -18,7 +18,6 @@ const (
 type Config struct {
 	PORT           string      `mapstructure:"PORT"`
 	ENV            Environment `mapstructure:"ENV"`
-	DB_URL         string      `mapstructure:"DB_URL"`
 	DB_HOST        string      `mapstructure:"DB_HOST"`
 	DB_PORT        string      `mapstructure:"DB_PORT"`
 	DB_NAME        string      `mapstructure:"DB_NAME"`

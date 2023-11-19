@@ -1,6 +1,7 @@
 package initializers
 
 import (
+	"fmt"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -12,7 +13,9 @@ var DB *gorm.DB
 func ConnectToDB() {
 	var err error
 
-	dsn := CONFIG.DB_URL
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		CONFIG.DB_HOST, CONFIG.DB_USER, CONFIG.DB_PASSWORD, CONFIG.DB_NAME, CONFIG.DB_PORT)
+
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
