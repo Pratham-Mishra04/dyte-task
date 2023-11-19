@@ -30,7 +30,7 @@ func verifyToken(tokenString string, user *models.LogUser) error {
 			return &fiber.Error{Code: 403, Message: "Your token has expired."}
 		}
 
-		userID, ok := claims["sub"].(string)
+		userID, ok := claims["sub"]
 		if !ok {
 			return &fiber.Error{Code: 401, Message: "Invalid user ID in token claims."}
 		}
@@ -64,6 +64,5 @@ func Protect(c *fiber.Ctx) error {
 		return err
 	}
 
-	c.Set("loggedInUserID", user.ID.String())
 	return c.Next()
 }

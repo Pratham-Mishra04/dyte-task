@@ -10,7 +10,6 @@ import (
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -69,7 +68,7 @@ func SignUp(c *fiber.Ctx) error {
 
 	var user models.LogUser
 	initializers.DB.First(&user, "username = ?", reqBody.Username)
-	if user.ID != uuid.Nil {
+	if user.ID != 0 {
 		return &fiber.Error{Code: 400, Message: "User with this Username already exists"}
 	}
 
@@ -145,7 +144,7 @@ func Refresh(c *fiber.Ctx) error {
 
 	if access_token_claims, ok := access_token.Claims.(jwt.MapClaims); ok {
 
-		access_token_userID, ok := access_token_claims["sub"].(string)
+		access_token_userID, ok := access_token_claims["sub"]
 		if !ok {
 			return &fiber.Error{Code: 401, Message: "Invalid user ID in token claims."}
 		}
@@ -157,7 +156,7 @@ func Refresh(c *fiber.Ctx) error {
 			return &fiber.Error{Code: 500, Message: config.DATABASE_ERROR}
 		}
 
-		if user.ID == uuid.Nil {
+		if user.ID == 0 {
 			return &fiber.Error{Code: 401, Message: "User of this token no longer exists"}
 		}
 
@@ -180,7 +179,7 @@ func Refresh(c *fiber.Ctx) error {
 		}
 
 		if refresh_token_claims, ok := refresh_token.Claims.(jwt.MapClaims); ok && refresh_token.Valid {
-			refresh_token_userID, ok := refresh_token_claims["sub"].(string)
+			refresh_token_userID, ok := refresh_token_claims["sub"]
 			if !ok {
 				return &fiber.Error{Code: 401, Message: "Invalid user ID in token claims."}
 			}

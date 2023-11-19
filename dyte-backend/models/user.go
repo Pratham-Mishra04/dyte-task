@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type UserRole string
@@ -14,7 +12,7 @@ const (
 )
 
 type LogUser struct {
-	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key" json:"id"`
+	ID        int       `gorm:"autoIncrement;primaryKey" json:"id"`
 	Username  string    `gorm:"type:text;unique;not null" json:"username"`
 	Role      UserRole  `gorm:"type:text" json:"role"`
 	Password  string    `json:"-"`
