@@ -122,7 +122,7 @@ const SignUp = () => {
                   value={role}
                   className="px-1 py-3 w-full bg-white text-gray-400 border-2 rounded-xl focus:ring-0"
                 >
-                  {['User', 'Manager'].map((option, index) => (
+                  {['Member', 'Manager'].map((option, index) => (
                     <option
                       className="w-full bg-white focus:outline-none border-2 p-2 rounded-xl text-gray-400"
                       key={index}

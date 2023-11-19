@@ -28,6 +28,8 @@ type Config struct {
 	REDIS_PASSWORD string      `mapstructure:"REDIS_PASSWORD"`
 	JWT_SECRET     string      `mapstructure:"JWT_SECRET"`
 	FRONTEND_URL   string      `mapstructure:"FRONTEND_URL"`
+	POPULATE_USERS bool        `mapstructure:"POPULATE_USERS"`
+	POPULATE_LOGS  bool        `mapstructure:"POPULATE_LOGS"`
 }
 
 var CONFIG Config

@@ -23,7 +23,7 @@ services:
       - backend-network
 
   postgres:
-    image_name: postgres:16
+    image: postgres:16
     container_name: dyte-postgres-db
     restart: always
     ports:
@@ -62,5 +62,5 @@ services:
 
 volumes:
   postgres:
-    name: postgres-db
+    name: dyte-db
     driver: local

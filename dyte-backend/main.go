@@ -4,6 +4,7 @@ import (
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/config"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/initializers"
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/routers"
+	"github.com/Pratham-Mishra04/dyte/dyte-backend/scripts"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -15,7 +16,12 @@ func init() {
 	initializers.ConnectToCache()
 	initializers.AutoMigrate()
 
-	// scripts.PopulateLogs()
+	if initializers.CONFIG.POPULATE_USERS {
+		scripts.PopulateUsers()
+	}
+	if initializers.CONFIG.POPULATE_USERS {
+		scripts.PopulateLogs()
+	}
 
 	config.AddLogger()
 }

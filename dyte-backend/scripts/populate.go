@@ -10,6 +10,30 @@ import (
 	"github.com/Pratham-Mishra04/dyte/dyte-backend/models"
 )
 
+func PopulateUsers() {
+	log.Println("----------------Populating Users----------------")
+
+	jsonFile, err := os.Open("scripts/users.json")
+	if err != nil {
+		log.Fatalf("Failed to open the JSON file: %v", err)
+	}
+	defer jsonFile.Close()
+
+	var entries []models.LogUser
+	jsonDecoder := json.NewDecoder(jsonFile)
+	if err := jsonDecoder.Decode(&entries); err != nil {
+		log.Fatalf("Failed to decode JSON: %v", err)
+	}
+
+	for i, user := range entries {
+		if err := initializers.DB.Create(&user).Error; err != nil {
+			log.Printf("%d : Failed to insert user: %v", i, err)
+		} else {
+			log.Printf("%d : User inserted", i)
+		}
+	}
+}
+
 func PopulateLogs() {
 	log.Println("----------------Populating Logs----------------")
 

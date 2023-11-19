@@ -1,4 +1,4 @@
-FROM golang:1.20
+FROM golang:1.21
 
 # Set destination for COPY
 WORKDIR /app
@@ -11,7 +11,8 @@ RUN go mod download
 
 COPY . .
 
-RUN mkdir /app/logs
+# Check if /app/logs folder exists before creating
+RUN if [ ! -d "/app/logs" ]; then mkdir /app/logs; fi
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /main
